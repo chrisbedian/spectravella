@@ -124,8 +124,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     function randomCircleVelocity() {
         return new THREE.Vector2(
-            (Math.random() - 0.5) * 0.003,
-            (Math.random() - 0.5) * 0.007
+            (Math.random() - 0.5) * 0.005,
+            (Math.random() - 0.5) * 0.005
         );
     }
 
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         colors = getColors();
         for (let i = 0; i < numCircles; i++) {
             circleColors[i] = colors[Math.floor(Math.random() * colors.length)];
-            circleVelocities[i] = new THREE.Vector2((Math.random() - 0.5) * 0.003, (Math.random() - 0.5) * 0.003);
+            circleVelocities[i] = new THREE.Vector2((Math.random() - 0.5) * 0.005, (Math.random() - 0.5) * 0.005);
         }
 
         // 3. Add the plane (with the shader material) back into the scene.
