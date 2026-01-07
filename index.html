@@ -1,26 +1,1164 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spectravella - Color Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'spectral-dark': '#0a0a0f',
+              'spectral-card': '#1a1a2e',
+              'spectral-border': '#2a2a4e',
+            },
+          },
+        },
+      }
+    </script>
+    <script src="spectravella.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        margin: 0;
+      }
+      /* Custom color input styling */
+      input[type='color'] {
+        -webkit-appearance: none;
+        border: none;
+        cursor: pointer;
+      }
+      input[type='color']::-webkit-color-swatch-wrapper {
+        padding: 0;
+      }
+      input[type='color']::-webkit-color-swatch {
+        border: none;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body class="bg-spectral-dark min-h-screen">
+    <!-- Main Visualization -->
+    <div class="sprectravella-container w-full h-[60vh] relative">
+      <!-- Title Overlay -->
+      <div class="absolute top-6 left-6 z-10">
+        <h1 class="text-4xl font-bold text-white/90 tracking-tight">
+          Spectravella
+        </h1>
+        <p class="text-white/50 text-sm mt-1">Interactive Color Visualizer</p>
+      </div>
+    </div>
+
+    <!-- Controls Panel -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
+      <!-- Color Picker Section -->
+      <div
+        class="bg-spectral-card rounded-2xl p-6 border border-spectral-border"
+      >
+        <h2 class="text-white/90 text-lg font-semibold mb-6">Color Palette</h2>
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+          <!-- Color 1 -->
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative group">
+              <input
+                type="color"
+                id="spectravella-color1"
+                value="#E06FBB"
+                class="w-16 h-16 rounded-xl shadow-lg transition-transform group-hover:scale-105"
+              />
+              <div
+                class="absolute -bottom-1 -right-1 w-5 h-5 bg-spectral-card rounded-full flex items-center justify-center border border-spectral-border"
+              >
+                <span class="text-white/60 text-xs">1</span>
+              </div>
+            </div>
+            <span class="text-white/50 text-xs font-mono" id="color1-hex"
+              >#E06FBB</span
+            >
+          </div>
+
+          <!-- Color 2 -->
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative group">
+              <input
+                type="color"
+                id="spectravella-color2"
+                value="#8D28F6"
+                class="w-16 h-16 rounded-xl shadow-lg transition-transform group-hover:scale-105"
+              />
+              <div
+                class="absolute -bottom-1 -right-1 w-5 h-5 bg-spectral-card rounded-full flex items-center justify-center border border-spectral-border"
+              >
+                <span class="text-white/60 text-xs">2</span>
+              </div>
+            </div>
+            <span class="text-white/50 text-xs font-mono" id="color2-hex"
+              >#8D28F6</span
+            >
+          </div>
+
+          <!-- Color 3 -->
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative group">
+              <input
+                type="color"
+                id="spectravella-color3"
+                value="#8FCBE7"
+                class="w-16 h-16 rounded-xl shadow-lg transition-transform group-hover:scale-105"
+              />
+              <div
+                class="absolute -bottom-1 -right-1 w-5 h-5 bg-spectral-card rounded-full flex items-center justify-center border border-spectral-border"
+              >
+                <span class="text-white/60 text-xs">3</span>
+              </div>
+            </div>
+            <span class="text-white/50 text-xs font-mono" id="color3-hex"
+              >#8FCBE7</span
+            >
+          </div>
+
+          <!-- Color 4 -->
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative group">
+              <input
+                type="color"
+                id="spectravella-color4"
+                value="#F2B077"
+                class="w-16 h-16 rounded-xl shadow-lg transition-transform group-hover:scale-105"
+              />
+              <div
+                class="absolute -bottom-1 -right-1 w-5 h-5 bg-spectral-card rounded-full flex items-center justify-center border border-spectral-border"
+              >
+                <span class="text-white/60 text-xs">4</span>
+              </div>
+            </div>
+            <span class="text-white/50 text-xs font-mono" id="color4-hex"
+              >#F2B077</span
+            >
+          </div>
+
+          <!-- Background Color -->
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative group">
+              <input
+                type="color"
+                id="spectravella-background-color"
+                value="#000000"
+                class="w-16 h-16 rounded-xl shadow-lg transition-transform group-hover:scale-105 ring-2 ring-white/10"
+              />
+              <div
+                class="absolute -bottom-1 -right-1 w-5 h-5 bg-spectral-card rounded-full flex items-center justify-center border border-spectral-border"
+              >
+                <span class="text-white/60 text-xs">BG</span>
+              </div>
+            </div>
+            <span class="text-white/50 text-xs font-mono" id="bg-hex"
+              >#000000</span
+            >
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-3 pt-4 border-t border-spectral-border">
+          <button
+            id="spectravella-updateColors"
+            class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium rounded-lg hover:from-purple-500 hover:to-pink-500 transition-all shadow-lg shadow-purple-500/20 flex items-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              ></path>
+            </svg>
+            Update Preview
+          </button>
+
+          <button
+            id="spectravella-randomize"
+            class="px-6 py-2.5 bg-spectral-border text-white/80 font-medium rounded-lg hover:bg-white/10 transition-all flex items-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+              ></path>
+            </svg>
+            Randomize
+          </button>
+
+          <button
+            id="spectravella-downloadButton"
+            class="px-6 py-2.5 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2 md:ml-auto"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              ></path>
+            </svg>
+            Download Project
+          </button>
+        </div>
+      </div>
+
+      <!-- Visual Effects Settings -->
+      <div
+        class="bg-spectral-card rounded-2xl p-6 border border-spectral-border mt-6"
+      >
+        <h2
+          class="text-white/90 text-lg font-semibold mb-6 flex items-center gap-2"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+            ></path>
+          </svg>
+          Visual Effects
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Animation Speed -->
+          <div>
+            <label class="text-white/70 text-sm mb-2 block"
+              >Animation Speed</label
+            >
+            <input
+              type="range"
+              id="spectravella-speed"
+              min="0.1"
+              max="3"
+              step="0.1"
+              value="1"
+              class="w-full h-2 bg-spectral-border rounded-lg appearance-none cursor-pointer accent-purple-500"
+            />
+            <div class="flex justify-between text-white/40 text-xs mt-1">
+              <span>Slow</span>
+              <span id="speed-value" class="text-purple-400">1x</span>
+              <span>Fast</span>
+            </div>
+          </div>
+
+          <!-- Noise Intensity -->
+          <div>
+            <label class="text-white/70 text-sm mb-2 block"
+              >Smoke Intensity</label
+            >
+            <input
+              type="range"
+              id="spectravella-noise"
+              min="1"
+              max="10"
+              step="0.5"
+              value="4"
+              class="w-full h-2 bg-spectral-border rounded-lg appearance-none cursor-pointer accent-pink-500"
+            />
+            <div class="flex justify-between text-white/40 text-xs mt-1">
+              <span>Subtle</span>
+              <span id="noise-value" class="text-pink-400">4</span>
+              <span>Intense</span>
+            </div>
+          </div>
+
+          <!-- Circle Size -->
+          <div>
+            <label class="text-white/70 text-sm mb-2 block">Blob Size</label>
+            <input
+              type="range"
+              id="spectravella-size"
+              min="0.3"
+              max="1.5"
+              step="0.1"
+              value="0.7"
+              class="w-full h-2 bg-spectral-border rounded-lg appearance-none cursor-pointer accent-cyan-500"
+            />
+            <div class="flex justify-between text-white/40 text-xs mt-1">
+              <span>Small</span>
+              <span id="size-value" class="text-cyan-400">0.7</span>
+              <span>Large</span>
+            </div>
+          </div>
+
+          <!-- Blend Mode -->
+          <div>
+            <label class="text-white/70 text-sm mb-2 block"
+              >Blend Softness</label
+            >
+            <input
+              type="range"
+              id="spectravella-blend"
+              min="0.01"
+              max="0.5"
+              step="0.01"
+              value="0.2"
+              class="w-full h-2 bg-spectral-border rounded-lg appearance-none cursor-pointer accent-amber-500"
+            />
+            <div class="flex justify-between text-white/40 text-xs mt-1">
+              <span>Sharp</span>
+              <span id="blend-value" class="text-amber-400">0.2</span>
+              <span>Soft</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-spectral-border flex gap-3">
+          <button
+            id="spectravella-reset-effects"
+            class="px-4 py-2 bg-spectral-border text-white/70 text-sm rounded-lg hover:bg-white/10 transition-all"
+          >
+            Reset to Defaults
+          </button>
+          <button
+            id="spectravella-pulse-mode"
+            class="px-4 py-2 bg-gradient-to-r from-purple-600/50 to-pink-600/50 text-white/90 text-sm rounded-lg hover:from-purple-500/50 hover:to-pink-500/50 transition-all flex items-center gap-2"
+          >
+            <span class="relative flex h-2 w-2">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-2 w-2 bg-pink-500"
+              ></span>
+            </span>
+            Pulse Mode
+          </button>
+        </div>
+      </div>
+
+      <!-- Preset Palettes (Optional Enhancement) -->
+      <div
+        class="bg-spectral-card rounded-2xl p-6 border border-spectral-border mt-6"
+      >
+        <h2 class="text-white/90 text-lg font-semibold mb-4">
+          Preset Palettes
+        </h2>
+        <div class="flex flex-wrap gap-3">
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#E06FBB,#8D28F6,#8FCBE7,#F2B077,#120818"
+          >
+            🌈 Default
+          </button>
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#FF6B6B,#4ECDC4,#45B7D1,#96CEB4,#0a1a1f"
+          >
+            🌊 Ocean Breeze
+          </button>
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#F093FB,#F5576C,#4FACFE,#00F2FE,#0f0520"
+          >
+            🔮 Neon Dreams
+          </button>
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#FFD93D,#FF6B6B,#C9B1FF,#6BCB77,#1a0f1e"
+          >
+            🎨 Sunset Glow
+          </button>
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#A8E6CF,#DCEDC1,#FFD3A5,#FD6585,#0f1518"
+          >
+            🌸 Spring Bloom
+          </button>
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#00D9FF,#00FF94,#B4FF39,#FFE500,#021a1f"
+          >
+            ⚡ Electric
+          </button>
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#FF1493,#FF6347,#FFD700,#FF4500,#1a0508"
+          >
+            🔥 Inferno
+          </button>
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#E0E5EC,#A3B1C6,#8B9DC3,#5C6BC0,#0a0c12"
+          >
+            🌙 Moonlight
+          </button>
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#FF6B6B,#FFE66D,#4ECDC4,#95E1D3,#F7F9FC"
+          >
+            ☀️ Daylight
+          </button>
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#6C5CE7,#A29BFE,#FD79A8,#FDCB6E,#FAF9F7"
+          >
+            🦄 Pastel Dream
+          </button>
+          <button
+            class="preset-btn px-4 py-2 rounded-lg bg-spectral-border hover:bg-white/10 transition-all text-white/70 text-sm"
+            data-colors="#E17055,#FDCB6E,#00B894,#0984E3,#F5F6FA"
+          >
+            🎪 Carnival
+          </button>
+        </div>
+      </div>
+
+      <!-- Documentation Section -->
+      <div
+        class="bg-spectral-card rounded-2xl p-6 border border-spectral-border mt-6"
+      >
+        <h2
+          class="text-white/90 text-xl font-semibold mb-6 flex items-center gap-2"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            ></path>
+          </svg>
+          How to Use
+        </h2>
+
+        <!-- Quick Start -->
+        <div class="mb-8">
+          <h3 class="text-white/80 font-medium mb-4 text-lg">🚀 Quick Start</h3>
+          <div class="space-y-4">
+            <div class="flex gap-4">
+              <div
+                class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center text-purple-400 font-bold text-sm"
+              >
+                1
+              </div>
+              <div>
+                <p class="text-white/70 mb-2">
+                  Include the script in your
+                  <code class="bg-white/10 px-2 py-0.5 rounded text-pink-400"
+                    >&lt;head&gt;</code
+                  >
+                </p>
+                <pre
+                  class="bg-black/40 rounded-lg p-4 text-sm overflow-x-auto"
+                ><code class="text-green-400">&lt;script src="spectravella.js"&gt;&lt;/script&gt;</code></pre>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div
+                class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center text-purple-400 font-bold text-sm"
+              >
+                2
+              </div>
+              <div class="min-w-0">
+                <p class="text-white/70 mb-2">
+                  Add a container element with the class
+                  <code class="bg-white/10 px-2 py-0.5 rounded text-pink-400"
+                    >sprectravella-container</code
+                  >
+                </p>
+                <pre
+                  class="bg-black/40 rounded-lg p-4 text-sm overflow-x-auto w-fit max-w-full"
+                ><code class="text-green-400">&lt;div class="sprectravella-container"&gt;&lt;/div&gt;</code></pre>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div
+                class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center text-purple-400 font-bold text-sm"
+              >
+                3
+              </div>
+              <div>
+                <p class="text-white/70 mb-2">
+                  Style the container with dimensions
+                </p>
+                <pre
+                  class="bg-black/40 rounded-lg p-4 text-sm overflow-x-auto"
+                ><code class="text-green-400">.sprectravella-container {
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+}</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customizing Colors -->
+        <div class="mb-8">
+          <h3 class="text-white/80 font-medium mb-4 text-lg">
+            🎨 Customizing Colors
+          </h3>
+          <p class="text-white/60 mb-4">
+            Add color inputs with these IDs to enable user customization:
+          </p>
+          <pre
+            class="bg-black/40 rounded-lg p-4 text-sm overflow-x-auto"
+          ><code class="text-green-400">&lt;!-- Gradient Colors --&gt;
+&lt;input type="color" id="spectravella-color1" value="#E06FBB"&gt;
+&lt;input type="color" id="spectravella-color2" value="#8D28F6"&gt;
+&lt;input type="color" id="spectravella-color3" value="#8FCBE7"&gt;
+&lt;input type="color" id="spectravella-color4" value="#F2B077"&gt;
+
+&lt;!-- Background Color --&gt;
+&lt;input type="color" id="spectravella-background-color" value="#000000"&gt;
+
+&lt;!-- Update Button --&gt;
+&lt;button id="spectravella-updateColors"&gt;Update Colors&lt;/button&gt;</code></pre>
+        </div>
+
+        <!-- Full Example -->
+        <div class="mb-8">
+          <h3 class="text-white/80 font-medium mb-4 text-lg">
+            📄 Full Example
+          </h3>
+          <pre
+            class="bg-black/40 rounded-lg p-4 text-sm overflow-x-auto max-h-80"
+          ><code class="text-green-400">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;My Spectravella Page&lt;/title&gt;
+  &lt;script src="spectravella.js"&gt;&lt;/script&gt;
+  &lt;style&gt;
+    body { margin: 0; }
+    .sprectravella-container {
+      width: 100%;
+      height: 100vh;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="sprectravella-container"&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        </div>
+
+        <!-- Use Cases -->
+        <div class="mb-6">
+          <h3 class="text-white/80 font-medium mb-4 text-lg">🎯 Use Cases</h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div class="bg-white/5 rounded-lg p-3 text-center">
+              <span class="text-2xl mb-1 block">🏠</span>
+              <span class="text-white/60 text-sm">Landing Pages</span>
+            </div>
+            <div class="bg-white/5 rounded-lg p-3 text-center">
+              <span class="text-2xl mb-1 block">💼</span>
+              <span class="text-white/60 text-sm">Portfolio Sites</span>
+            </div>
+            <div class="bg-white/5 rounded-lg p-3 text-center">
+              <span class="text-2xl mb-1 block">🎵</span>
+              <span class="text-white/60 text-sm">Music Visualizers</span>
+            </div>
+            <div class="bg-white/5 rounded-lg p-3 text-center">
+              <span class="text-2xl mb-1 block">📊</span>
+              <span class="text-white/60 text-sm">Presentations</span>
+            </div>
+            <div class="bg-white/5 rounded-lg p-3 text-center">
+              <span class="text-2xl mb-1 block">⏳</span>
+              <span class="text-white/60 text-sm">Loading Screens</span>
+            </div>
+            <div class="bg-white/5 rounded-lg p-3 text-center">
+              <span class="text-2xl mb-1 block">🎮</span>
+              <span class="text-white/60 text-sm">Game Backgrounds</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Important Notes -->
+        <div class="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+          <h4 class="text-amber-400 font-medium mb-2 flex items-center gap-2">
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              ></path>
+            </svg>
+            Important Notes
+          </h4>
+          <ul class="text-white/60 text-sm space-y-1">
+            <li>
+              • Always include
+              <code class="bg-white/10 px-1 rounded text-amber-300"
+                >spectravella.js</code
+              >
+              in the
+              <code class="bg-white/10 px-1 rounded text-amber-300"
+                >&lt;head&gt;</code
+              >
+              section
+            </li>
+            <li>
+              • Container class is
+              <code class="bg-white/10 px-1 rounded text-amber-300"
+                >sprectravella-container</code
+              >
+              (note the spelling)
+            </li>
+            <li>• Container needs explicit dimensions to render properly</li>
+            <li>• Uses WebGL via Three.js — ensure browser support</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="text-center py-8 text-white/40 text-sm">
+        <p>
+          Made with 💜 by
+          <a
+            href="https://github.com/chrisbedian"
+            class="text-purple-400 hover:text-purple-300 transition-colors"
+            >Chris Bedian</a
+          >
+        </p>
+        <p class="mt-1">MIT License © 2023</p>
+      </div>
+    </div>
+
+    <!-- UI Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Update hex display when color changes
+        const colorInputs = [
+          { input: 'spectravella-color1', display: 'color1-hex' },
+          { input: 'spectravella-color2', display: 'color2-hex' },
+          { input: 'spectravella-color3', display: 'color3-hex' },
+          { input: 'spectravella-color4', display: 'color4-hex' },
+          { input: 'spectravella-background-color', display: 'bg-hex' },
+        ]
+
+        colorInputs.forEach(({ input, display }) => {
+          const inputEl = document.getElementById(input)
+          const displayEl = document.getElementById(display)
+          if (inputEl && displayEl) {
+            inputEl.addEventListener('input', () => {
+              displayEl.textContent = inputEl.value.toUpperCase()
+            })
+          }
+        })
+
+        // Randomize button
+        const randomizeBtn = document.getElementById('spectravella-randomize')
+        if (randomizeBtn) {
+          randomizeBtn.addEventListener('click', () => {
+            const randomColor = () =>
+              '#' +
+              Math.floor(Math.random() * 16777215)
+                .toString(16)
+                .padStart(6, '0')
+
+            // Generate a random background - sometimes dark, sometimes light
+            const randomBg = () => {
+              const isLight = Math.random() > 0.7 // 30% chance of light background
+              if (isLight) {
+                // Light/white tinted backgrounds
+                const r = Math.floor(220 + Math.random() * 35)
+                const g = Math.floor(220 + Math.random() * 35)
+                const b = Math.floor(220 + Math.random() * 35)
+                return (
+                  '#' +
+                  [r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('')
+                )
+              } else {
+                // Dark backgrounds with subtle color tints
+                const r = Math.floor(Math.random() * 45)
+                const g = Math.floor(Math.random() * 45)
+                const b = Math.floor(Math.random() * 55)
+                return (
+                  '#' +
+                  [r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('')
+                )
+              }
+            }
+
+            colorInputs.slice(0, 4).forEach(({ input, display }) => {
+              const color = randomColor()
+              document.getElementById(input).value = color
+              document.getElementById(display).textContent = color.toUpperCase()
+            })
+
+            // Also randomize background
+            const bgColor = randomBg()
+            document.getElementById('spectravella-background-color').value =
+              bgColor
+            document.getElementById('bg-hex').textContent =
+              bgColor.toUpperCase()
+
+            // Trigger update
+            document.getElementById('spectravella-updateColors').click()
+          })
+        }
+
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const colors = btn.dataset.colors.split(',')
+            const inputs = [
+              'spectravella-color1',
+              'spectravella-color2',
+              'spectravella-color3',
+              'spectravella-color4',
+              'spectravella-background-color',
+            ]
+            const displays = [
+              'color1-hex',
+              'color2-hex',
+              'color3-hex',
+              'color4-hex',
+              'bg-hex',
+            ]
+
+            colors.forEach((color, i) => {
+              document.getElementById(inputs[i]).value = color
+              document.getElementById(displays[i]).textContent =
+                color.toUpperCase()
+            })
+
+            // Trigger update
+            document.getElementById('spectravella-updateColors').click()
+          })
+        })
+
+        // Visual Effects Controls
+        const speedSlider = document.getElementById('spectravella-speed')
+        const noiseSlider = document.getElementById('spectravella-noise')
+        const sizeSlider = document.getElementById('spectravella-size')
+        const blendSlider = document.getElementById('spectravella-blend')
+        const resetEffectsBtn = document.getElementById(
+          'spectravella-reset-effects'
+        )
+        const pulseModeBtn = document.getElementById('spectravella-pulse-mode')
+
+        let pulseMode = false
+        let pulseInterval = null
+
+        // Speed control
+        if (speedSlider) {
+          speedSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value)
+            document.getElementById('speed-value').textContent = val + 'x'
+            if (window.spectravellaAPI) {
+              window.spectravellaAPI.speedMultiplier = val
+            }
+          })
+        }
+
+        // Noise/smoke intensity control
+        if (noiseSlider) {
+          noiseSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value)
+            document.getElementById('noise-value').textContent = val
+            if (window.spectravellaAPI) {
+              window.spectravellaAPI.setNoiseScale(val)
+            }
+          })
+        }
+
+        // Circle/blob size control
+        if (sizeSlider) {
+          sizeSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value)
+            document.getElementById('size-value').textContent = val
+            if (window.spectravellaAPI) {
+              window.spectravellaAPI.setCircleScale(val)
+            }
+          })
+        }
+
+        // Blend softness (this would need shader modification for full effect)
+        if (blendSlider) {
+          blendSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value)
+            document.getElementById('blend-value').textContent = val
+            // This is a placeholder - full implementation would require shader uniform
+          })
+        }
+
+        // Reset to defaults
+        if (resetEffectsBtn) {
+          resetEffectsBtn.addEventListener('click', () => {
+            speedSlider.value = 1
+            noiseSlider.value = 4
+            sizeSlider.value = 0.7
+            blendSlider.value = 0.2
+
+            document.getElementById('speed-value').textContent = '1x'
+            document.getElementById('noise-value').textContent = '4'
+            document.getElementById('size-value').textContent = '0.7'
+            document.getElementById('blend-value').textContent = '0.2'
+
+            if (window.spectravellaAPI) {
+              window.spectravellaAPI.resetToDefaults()
+              window.spectravellaAPI.uniforms.u_noiseScale.value = 4
+              window.spectravellaAPI.uniforms.u_circleScale.value = 0.7
+            }
+          })
+        }
+
+        // Pulse mode - rhythmically changes speed
+        if (pulseModeBtn) {
+          pulseModeBtn.addEventListener('click', () => {
+            pulseMode = !pulseMode
+
+            if (pulseMode) {
+              pulseModeBtn.classList.add('ring-2', 'ring-pink-500')
+              let phase = 0
+              pulseInterval = setInterval(() => {
+                if (window.spectravellaAPI) {
+                  // Smooth sine wave pulsing between 0.3 and 2.0
+                  const pulseSpeed = 0.3 + (Math.sin(phase) + 1) * 0.85
+                  window.spectravellaAPI.speedMultiplier = pulseSpeed
+                  speedSlider.value = pulseSpeed.toFixed(1)
+                  document.getElementById('speed-value').textContent =
+                    pulseSpeed.toFixed(1) + 'x'
+                  phase += 0.1
+                }
+              }, 50)
+            } else {
+              pulseModeBtn.classList.remove('ring-2', 'ring-pink-500')
+              clearInterval(pulseInterval)
+              // Reset to slider value
+              const val = parseFloat(speedSlider.value)
+              if (window.spectravellaAPI) {
+                window.spectravellaAPI.speedMultiplier = val
+              }
+            }
+          })
+        }
+
+        // Download Project as ZIP
+        const oldDownloadBtn = document.getElementById(
+          'spectravella-downloadButton'
+        )
+        if (oldDownloadBtn) {
+          // Clone the button to remove all existing event listeners from spectravella.js
+          const downloadBtn = oldDownloadBtn.cloneNode(true)
+          oldDownloadBtn.parentNode.replaceChild(downloadBtn, oldDownloadBtn)
+
+          downloadBtn.addEventListener('click', async function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+
+            const btn = this
+            const originalHTML = btn.innerHTML
+            btn.innerHTML = `
+              <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Preparing...
+            `
+            btn.disabled = true
+
+            try {
+              // Get current colors
+              const color1 = document.getElementById(
+                'spectravella-color1'
+              ).value
+              const color2 = document.getElementById(
+                'spectravella-color2'
+              ).value
+              const color3 = document.getElementById(
+                'spectravella-color3'
+              ).value
+              const color4 = document.getElementById(
+                'spectravella-color4'
+              ).value
+              const bgColor = document.getElementById(
+                'spectravella-background-color'
+              ).value
+
+              // Get current visual effects settings
+              const speedValue = parseFloat(
+                document.getElementById('spectravella-speed').value
+              )
+              const noiseValue = parseFloat(
+                document.getElementById('spectravella-noise').value
+              )
+              const sizeValue = parseFloat(
+                document.getElementById('spectravella-size').value
+              )
+
+              // Fetch the spectravella.js file
+              const jsResponse = await fetch('spectravella.js')
+              let jsContent = await jsResponse.text()
+
+              // Update colors in JS (the existing logic from spectravella.js)
+              // We need to convert hex to RGB values (0-1 range)
+              const hexToRgb = (hex) => {
+                const r = parseInt(hex.slice(1, 3), 16) / 255
+                const g = parseInt(hex.slice(3, 5), 16) / 255
+                const b = parseInt(hex.slice(5, 7), 16) / 255
+                return { r, g, b }
+              }
+
+              const c1 = hexToRgb(color1)
+              const c2 = hexToRgb(color2)
+              const c3 = hexToRgb(color3)
+              const c4 = hexToRgb(color4)
+
+              // Replace the entire getColors function with hardcoded values
+              // This is more reliable than trying to match complex regex patterns
+              const newGetColorsFunction = `function getColors() {
+    setBackgroundColorFromInput('spectravella-background-color', '${bgColor}')
+
+    return [
+      getColorFromInput(
+        'spectravella-color1',
+        new THREE.Vector4(${c1.r}, ${c1.g}, ${c1.b}, 1)
+      ),
+      getColorFromInput(
+        'spectravella-color2',
+        new THREE.Vector4(${c2.r}, ${c2.g}, ${c2.b}, 1)
+      ),
+      getColorFromInput(
+        'spectravella-color3',
+        new THREE.Vector4(${c3.r}, ${c3.g}, ${c3.b}, 1)
+      ),
+      getColorFromInput(
+        'spectravella-color4',
+        new THREE.Vector4(${c4.r}, ${c4.g}, ${c4.b}, 1)
+      ),
+    ]
+  }`
+
+              // Replace the getColors function
+              jsContent = jsContent.replace(
+                /function getColors\(\)\s*\{[\s\S]*?setBackgroundColorFromInput[\s\S]*?return\s*\[[\s\S]*?\]\s*\}/,
+                newGetColorsFunction
+              )
+
+              // Replace visual effects settings in JS
+              // Update default noise scale in uniforms
+              jsContent = jsContent.replace(
+                /u_noiseScale:\s*\{\s*value:\s*[\d.]+\s*\}/g,
+                `u_noiseScale: { value: ${noiseValue} }`
+              )
+              // Update default circle scale in uniforms
+              jsContent = jsContent.replace(
+                /u_circleScale:\s*\{\s*value:\s*[\d.]+\s*\}/g,
+                `u_circleScale: { value: ${sizeValue} }`
+              )
+              // Update speed multiplier default
+              jsContent = jsContent.replace(
+                /speedMultiplier:\s*[\d.]+/g,
+                `speedMultiplier: ${speedValue}`
+              )
+              // Set custom flags to true so resizeRenderer won't override
+              jsContent = jsContent.replace(
+                /_customNoiseScale:\s*false/g,
+                `_customNoiseScale: true`
+              )
+              jsContent = jsContent.replace(
+                /_customCircleScale:\s*false/g,
+                `_customCircleScale: true`
+              )
+
+              // Check if pulse mode is enabled
+              const isPulseEnabled = pulseMode
+
+              // Generate pulse mode script if enabled
+              const pulseScript = isPulseEnabled
+                ? `
+    <script>
+        // Pulse Mode - Automatically enabled
+        document.addEventListener('DOMContentLoaded', function() {
+            let phase = 0;
+            setInterval(function() {
+                if (window.spectravellaAPI) {
+                    // Smooth sine wave pulsing between 0.3 and 2.0
+                    const pulseSpeed = 0.3 + (Math.sin(phase) + 1) * 0.85;
+                    window.spectravellaAPI.speedMultiplier = pulseSpeed;
+                    phase += 0.1;
+                }
+            }, 50);
+        });
+    <` + `/script>`
+                : ''
+
+              // Generate HTML template
+              const htmlTemplate =
+                `<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sprectravella</title>
-    <script src="spectravella.js"></script>
+    <title>Spectravella</title>
+    <script src="spectravella.js"><` +
+                `/script>
     <link rel="stylesheet" href="styles.css">
-
     <style>
         body { margin: 0; }
     </style>
 </head>
 <body>
-	<div class="sprectravella-container"></div>
+    <div class="sprectravella-container"></div>${pulseScript}
 
-	<input type="color" id="spectravella-color1" value="#E06FBB">
-	<input type="color" id="spectravella-color2" value="#8D28F6">
-	<input type="color" id="spectravella-color3" value="#8FCBE7">
-	<input type="color" id="spectravella-color4" value="#F2B077">
-	<input type="color" id="spectravella-background-color" value="#000000">
-	<button id="spectravella-updateColors">Update Colors</button>
-	<button id="spectravella-downloadButton">Download</button>
-
+    <!-- Optional: Color controls (uncomment to enable user customization) -->
+    <!--
+    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 100; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 8px;">
+        <input type="color" id="spectravella-color1" value="${color1}">
+        <input type="color" id="spectravella-color2" value="${color2}">
+        <input type="color" id="spectravella-color3" value="${color3}">
+        <input type="color" id="spectravella-color4" value="${color4}">
+        <input type="color" id="spectravella-background-color" value="${bgColor}">
+        <button id="spectravella-updateColors">Update</button>
+    </div>
+    -->
 </body>
+</html>`
+
+              // Generate CSS
+              const cssContent = `.sprectravella-container {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+body {
+    overflow: hidden;
+}`
+
+              // Generate README
+              const readmeContent =
+                `# Spectravella
+
+Your custom color palette and visual effects have been applied!
+
+## Colors Used
+- Color 1: ${color1}
+- Color 2: ${color2}
+- Color 3: ${color3}
+- Color 4: ${color4}
+- Background: ${bgColor}
+
+## Visual Effects
+- Animation Speed: ${speedValue}x
+- Smoke Intensity: ${noiseValue}
+- Blob Size: ${sizeValue}
+- Pulse Mode: ${
+                  isPulseEnabled
+                    ? 'Enabled (auto-pulsing animation)'
+                    : 'Disabled'
+                }
+
+## Quick Start
+
+1. Open \`index.html\` in your browser
+2. That's it! The animation will start automatically.
+
+## Customization
+
+To enable real-time color controls, uncomment the color inputs section in \`index.html\`.
+
+## Integration
+
+To use as a background in your project:
+
+\`\`\`html
+<div class="sprectravella-container"></div>
+\`\`\`
+
+And include the script in your \`<head>\`:
+
+\`\`\`html
+<script src="spectravella.js"><` +
+                `/script>
+\`\`\`
+
+## License
+
+MIT License - Created with Spectravella by Chris Bedian
+`
+
+              // Create ZIP file
+              const zip = new JSZip()
+              zip.file('index.html', htmlTemplate)
+              zip.file('spectravella.js', jsContent)
+              zip.file('styles.css', cssContent)
+              zip.file('README.md', readmeContent)
+
+              // Generate and download
+              const content = await zip.generateAsync({ type: 'blob' })
+              const url = URL.createObjectURL(content)
+              const a = document.createElement('a')
+              a.href = url
+              a.download = 'spectravella-project.zip'
+              document.body.appendChild(a)
+              a.click()
+              document.body.removeChild(a)
+              URL.revokeObjectURL(url)
+
+              // Success state
+              btn.innerHTML = `
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Downloaded!
+              `
+              setTimeout(() => {
+                btn.innerHTML = originalHTML
+                btn.disabled = false
+              }, 2000)
+            } catch (error) {
+              console.error('Download failed:', error)
+              btn.innerHTML = `
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                Error
+              `
+              setTimeout(() => {
+                btn.innerHTML = originalHTML
+                btn.disabled = false
+              }, 2000)
+            }
+          })
+        }
+      })
+    </script>
+  </body>
 </html>
