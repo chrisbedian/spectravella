@@ -311,7 +311,7 @@
             </div>
           </div>
 
-          <!-- Blend Mode -->
+          <!-- Blend Softness -->
           <div>
             <label class="text-white/70 text-sm mb-2 block"
               >Blend Softness</label
@@ -319,15 +319,15 @@
             <input
               type="range"
               id="spectravella-blend"
-              min="0.01"
-              max="0.5"
-              step="0.01"
-              value="0.2"
+              min="0.1"
+              max="1.5"
+              step="0.1"
+              value="0.8"
               class="w-full h-2 bg-spectral-border rounded-lg appearance-none cursor-pointer accent-amber-500"
             />
             <div class="flex justify-between text-white/40 text-xs mt-1">
               <span>Sharp</span>
-              <span id="blend-value" class="text-amber-400">0.2</span>
+              <span id="blend-value" class="text-amber-400">0.8</span>
               <span>Soft</span>
             </div>
           </div>
@@ -809,12 +809,14 @@
           })
         }
 
-        // Blend softness (this would need shader modification for full effect)
+        // Blend softness control
         if (blendSlider) {
           blendSlider.addEventListener('input', (e) => {
             const val = parseFloat(e.target.value)
             document.getElementById('blend-value').textContent = val
-            // This is a placeholder - full implementation would require shader uniform
+            if (window.spectravellaAPI) {
+              window.spectravellaAPI.setBlendSoftness(val)
+            }
           })
         }
 
@@ -824,17 +826,18 @@
             speedSlider.value = 1
             noiseSlider.value = 4
             sizeSlider.value = 0.7
-            blendSlider.value = 0.2
+            blendSlider.value = 0.8
 
             document.getElementById('speed-value').textContent = '1x'
             document.getElementById('noise-value').textContent = '4'
             document.getElementById('size-value').textContent = '0.7'
-            document.getElementById('blend-value').textContent = '0.2'
+            document.getElementById('blend-value').textContent = '0.8'
 
             if (window.spectravellaAPI) {
               window.spectravellaAPI.resetToDefaults()
               window.spectravellaAPI.uniforms.u_noiseScale.value = 4
               window.spectravellaAPI.uniforms.u_circleScale.value = 0.7
+              window.spectravellaAPI.uniforms.u_blendSoftness.value = 0.8
             }
           })
         }
@@ -922,6 +925,9 @@
               const sizeValue = parseFloat(
                 document.getElementById('spectravella-size').value
               )
+              const blendValue = parseFloat(
+                document.getElementById('spectravella-blend').value
+              )
 
               // Fetch the spectravella.js file
               const jsResponse = await fetch('spectravella.js')
@@ -983,6 +989,11 @@
                 /u_circleScale:\s*\{\s*value:\s*[\d.]+\s*\}/g,
                 `u_circleScale: { value: ${sizeValue} }`
               )
+              // Update default blend softness in uniforms
+              jsContent = jsContent.replace(
+                /u_blendSoftness:\s*\{\s*value:\s*[\d.]+\s*\}/g,
+                `u_blendSoftness: { value: ${blendValue} }`
+              )
               // Update speed multiplier default
               jsContent = jsContent.replace(
                 /speedMultiplier:\s*[\d.]+/g,
@@ -996,6 +1007,10 @@
               jsContent = jsContent.replace(
                 /_customCircleScale:\s*false/g,
                 `_customCircleScale: true`
+              )
+              jsContent = jsContent.replace(
+                /_customBlendSoftness:\s*false/g,
+                `_customBlendSoftness: true`
               )
 
               // Check if pulse mode is enabled
@@ -1080,6 +1095,7 @@ Your custom color palette and visual effects have been applied!
 - Animation Speed: ${speedValue}x
 - Smoke Intensity: ${noiseValue}
 - Blob Size: ${sizeValue}
+- Blend Softness: ${blendValue}
 - Pulse Mode: ${
                   isPulseEnabled
                     ? 'Enabled (auto-pulsing animation)'

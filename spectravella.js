@@ -28681,6 +28681,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         uniform vec2 u_resolution;
         uniform float u_circleScale;
         uniform float u_noiseScale;
+        uniform float u_blendSoftness;
         uniform vec2 u_circlePositions[32];
         uniform vec4 u_circleColors[32];
         uniform sampler2D u_PerlinTexture;
@@ -28713,7 +28714,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 float distanceFromCenter = length(distortedUV - u_circlePositions[i]) / u_circleScale;
 
                 // Adjust the smoothness here for even softer gradients
-                float gradient = smoothstep(0.8, 0.01, distanceFromCenter);
+                float gradient = smoothstep(u_blendSoftness, 0.01, distanceFromCenter);
                 gradient = clamp(gradient, 0.001, 10.00);
 
                 float circleAlpha = gradient * u_circleColors[i].a;
@@ -28740,6 +28741,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     u_PerlinTexture: { value: perlinTexture },
     u_circleScale: { value: 1.0 },
     u_noiseScale: { value: 4.0 },
+    u_blendSoftness: { value: 0.8 },
     u_repeat: { value: new THREE.Vector2(2.0, 2.0) }, // Tile texture 4x4 times
   }
 
@@ -28750,6 +28752,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     speedMultiplier: 1.0,
     _customNoiseScale: false,
     _customCircleScale: false,
+    _customBlendSoftness: false,
     setNoiseScale: function (val) {
       uniforms.u_noiseScale.value = val
       this._customNoiseScale = true
@@ -28757,6 +28760,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
     setCircleScale: function (val) {
       uniforms.u_circleScale.value = val
       this._customCircleScale = true
+    },
+    setBlendSoftness: function (val) {
+      uniforms.u_blendSoftness.value = val
+      this._customBlendSoftness = true
     },
     setSpeed: function (multiplier) {
       this.speedMultiplier = multiplier
@@ -28767,6 +28774,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     resetToDefaults: function () {
       this._customNoiseScale = false
       this._customCircleScale = false
+      this._customBlendSoftness = false
       this.speedMultiplier = 1.0
     },
   }
