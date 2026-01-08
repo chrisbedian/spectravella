@@ -262,7 +262,7 @@
                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
               ></path>
             </svg>
-            Download Project
+            Download Spectravella
           </button>
         </div>
       </div>
@@ -1248,12 +1248,15 @@ MIT License - Created with Spectravella by Chris Bedian
         if (!sourceCanvas) return
 
         const container = document.getElementById('preview-container')
-        previewCtx.clearRect(
-          0,
-          0,
-          container.offsetWidth,
-          container.offsetHeight
+
+        // Fill with current background color first
+        const bgColorInput = document.getElementById(
+          'spectravella-background-color'
         )
+        previewCtx.fillStyle = bgColorInput ? bgColorInput.value : '#000000'
+        previewCtx.fillRect(0, 0, container.offsetWidth, container.offsetHeight)
+
+        // Then draw the canvas on top
         previewCtx.drawImage(
           sourceCanvas,
           0,
